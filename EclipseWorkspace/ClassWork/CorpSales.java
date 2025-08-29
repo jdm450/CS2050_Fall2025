@@ -5,10 +5,8 @@ import java.text.DecimalFormat;
  * This program demonstrates a two-dimensional array.
  */
 
-public class CorpSales
-{
-	public static void main(String[] args)
-	{
+public class CorpSales {
+	public static void main(String[] args) {
 		final int DIVS = 3; // Three divisions in the company
 		final int QTRS = 4; // Four quarters
 
