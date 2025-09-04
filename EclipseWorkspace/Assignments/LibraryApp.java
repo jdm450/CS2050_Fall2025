@@ -59,7 +59,7 @@ public class LibraryApp {
 		library.printAllBooks();
 		library.displayOldest();
 
-		// delete
+		// test adding more books than capacity
 		System.out.println("\n test adding a book when library is full");
 		library.addBook(new Book("Harry Potter and the Half Blood Prince", "JK Rowling", 2005));
 
@@ -126,6 +126,8 @@ class Library {
 		return name;
 	}
 
+	// try to remove repeated code
+	// this works but the logic is hard to follow... maybe try another way?
 	public void addBook(Book bookToAdd) {
 		if (bookToAdd == null) {
 			System.out.println("Invalid Book.");
@@ -171,7 +173,9 @@ class Library {
 		System.out.printf("(%d of %d slots filled)%n", count, (numberOfShelves * shelfCapcity));
 		System.out.println("------------------------------------------------------------");
 	}
-
+	
+	// not working for multiple oldest books.
+	// not sure how to make it work without array list to store oldest books or iterating through the array twice.
 	public void displayOldest() {
 		if (bookShelf[0][0] == null) {
 			System.out.println("Display Oldest: Library is empty");
