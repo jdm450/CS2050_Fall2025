@@ -60,7 +60,7 @@ public class LibraryApp {
 		library.displayOldest();
 
 		// test adding more books than capacity
-		System.out.println("\n test adding a book when library is full");
+		System.out.println("\nTest adding a book when library is full");
 		library.addBook(new Book("Harry Potter and the Half Blood Prince", "JK Rowling", 2005));
 
 	} // end of main method
@@ -126,13 +126,14 @@ class Library {
 		return name;
 	}
 
-	// try to remove repeated code
 	// this works but the logic is hard to follow... maybe try another way?
 	public void addBook(Book bookToAdd) {
 		if (bookToAdd == null) {
 			System.out.println("Invalid Book.");
 		} else {
-			if (!isFull) {
+			if (isFull) {
+				System.out.printf("Can't add: %s %nThe library is full%n", bookToAdd.toString());
+			} else {
 				if (currentSlot < shelfCapcity) {
 					bookShelf[currentShelf][currentSlot] = bookToAdd;
 					System.out.printf("added %s at shelf %d, row %d%n", bookToAdd.toString(), currentShelf + 1,
@@ -141,18 +142,11 @@ class Library {
 				} else {
 					currentShelf++;
 					currentSlot = 0;
-					if (currentShelf < numberOfShelves) {
-						bookShelf[currentShelf][currentSlot] = bookToAdd;
-						System.out.printf("added %s at shelf %d, row %d%n", bookToAdd.toString(), currentShelf + 1,
-								currentSlot + 1);
-						currentSlot++;
-					} else {
+					if (currentShelf >= numberOfShelves) {
 						isFull = true;
-						addBook(bookToAdd);
 					}
+					addBook(bookToAdd);
 				}
-			} else {
-				System.out.printf("Can't add: %s %nThe library is full%n", bookToAdd.toString());
 			}
 		}
 	}
@@ -174,24 +168,34 @@ class Library {
 		System.out.println("------------------------------------------------------------");
 	}
 	
-	// not working for multiple oldest books.
-	// not sure how to make it work without array list to store oldest books or iterating through the array twice.
+	// not sure how to make multiple oldest books work without array list to store oldest books
+	// or iterating through the array twice.
 	public void displayOldest() {
 		if (bookShelf[0][0] == null) {
 			System.out.println("Display Oldest: Library is empty");
 		} else {
-			Book oldestBook = bookShelf[0][0];
+			int oldestYear = bookShelf[0][0].getYear();
 			for (int i = 0; i <= currentShelf; i++) {
 				for (int j = 0; j < bookShelf[0].length; j++) {
 					if (bookShelf[i][j] != null) {
-						if (bookShelf[i][j].getYear() < oldestBook.getYear()) {
-							oldestBook = bookShelf[i][j];
+						if (bookShelf[i][j].getYear() < oldestYear) {
+							oldestYear = bookShelf[i][j].getYear();
 						}
 					}
 				}
 			}
-			System.out.println("Oldest book in " + name + "\nEarliest publication year: " + oldestBook.getYear() + "\n"
-					+ oldestBook.toString());
+			System.out.printf("Oldest Book in %s%nEarliest Publication Year: %d%n", name, oldestYear);
+			for (int i = 0; i <= currentShelf; i++) {
+				for (int j = 0; j < bookShelf[0].length; j++) {
+					if (bookShelf[i][j] != null) {
+						if (bookShelf[i][j].getYear() == oldestYear) {
+							System.out.println(bookShelf[i][j].toString());
+						}
+					} else {
+						return;
+					}
+				}
+			}
 		}
 	}
 
@@ -206,5 +210,4 @@ class Library {
 			System.out.printf("Shelf %d has %d books%n", (i + 1), count);
 		}
 	}
-
 } // end of Library class
