@@ -1,7 +1,7 @@
 /**
  * 
  */
-
+import java.time.Year;
 /**
  * 
  */
@@ -60,7 +60,7 @@ public class LibraryApp {
 		library.displayOldest();
 
 		// test adding more books than capacity
-		System.out.println("\nTest adding a book when library is full");
+		System.out.println("\nTest: adding a book when library is full");
 		library.addBook(new Book("Harry Potter and the Half Blood Prince", "JK Rowling", 2005));
 
 	} // end of main method
@@ -95,7 +95,7 @@ class Book {
 		return year;
 	}
 
-	// to string method
+	// toString method
 	@Override
 	public String toString() {
 		String formmatedString = String.format("\"%s\" by %s (%d)", title, author, year);
@@ -114,43 +114,61 @@ class Library {
 	private int currentSlot;
 	private boolean isFull;
 
-	// constructor
+	/**
+	 * Constructor for the Library class. currentShelf, currentSlot, and isFull do not need to be
+	 * explicitly declared in the constructor because default value is 0 for integers and false for booleans
+	 * @param name
+	 * @param numberOfShelves
+	 * @param shelfCapacity
+	 */
 	public Library(String name, int numberOfShelves, int shelfCapacity) {
 		this.name = name;
 		this.numberOfShelves = numberOfShelves;
 		this.shelfCapcity = shelfCapacity;
 		bookShelf = new Book[numberOfShelves][shelfCapacity];
 	}
-
+	
+	/**
+	 * Getter method for name variable.
+	 * @return name
+	 */
 	public String getName() {
 		return name;
 	}
-
-	// this works but the logic is hard to follow... maybe try another way?
+	
+	/**
+	 * Adds a book to the bookshelf array and adjusts row and column variables based on current position in the array.
+	 * I implemented one-step recursion to eliminate repetitive print statements.
+	 * Not as elegant as integer division and modulo, but it works.
+	 * @param bookToAdd
+	 */
 	public void addBook(Book bookToAdd) {
 		if (bookToAdd == null) {
 			System.out.println("Invalid Book.");
+			return;
+		}
+		if (isFull) {
+			System.out.printf("Can't add: %s %nThe library is full%n", bookToAdd.toString());
+			return;
+		}
+		if (currentSlot < shelfCapcity) {
+			bookShelf[currentShelf][currentSlot] = bookToAdd;
+			System.out.printf("added %s at shelf %d, row %d%n", bookToAdd.toString(), currentShelf + 1, currentSlot + 1);
+			currentSlot++;
 		} else {
-			if (isFull) {
-				System.out.printf("Can't add: %s %nThe library is full%n", bookToAdd.toString());
-			} else {
-				if (currentSlot < shelfCapcity) {
-					bookShelf[currentShelf][currentSlot] = bookToAdd;
-					System.out.printf("added %s at shelf %d, row %d%n", bookToAdd.toString(), currentShelf + 1,
-							currentSlot + 1);
-					currentSlot++;
-				} else {
-					currentShelf++;
-					currentSlot = 0;
-					if (currentShelf >= numberOfShelves) {
-						isFull = true;
-					}
-					addBook(bookToAdd);
-				}
+			currentShelf++;
+			currentSlot = 0;
+			if (currentShelf >= numberOfShelves) {
+				isFull = true;
 			}
+			addBook(bookToAdd);
 		}
 	}
-
+	
+	/**
+	 * Iterates through the bookShelf array up to and including currentShelf. 
+	 * Prints the row, column and book details for each index that isn't null.
+	 */
 	public void printAllBooks() {
 		System.out.println("------------------------------------------------------------\n"
 				+ "All books in Test Library\n" + "Shelf   Slot   Book Details\n"
@@ -168,9 +186,13 @@ class Library {
 		System.out.println("------------------------------------------------------------");
 	}
 	
-	// not sure how to make multiple oldest books work without array list to store oldest books
-	// or iterating through the array twice.
-	public void displayOldest() {
+	// currently iterating through the array twice.
+	// not sure how to make one iteration work without array list to store oldest books
+	// but wait... there's more... 
+	// use array[edge_max_books] with counter 
+	// or store oldest year as an instance variable of the library?
+	/**
+	 * public void displayOldest() {
 		if (bookShelf[0][0] == null) {
 			System.out.println("Display Oldest: Library is empty");
 		} else {
@@ -198,7 +220,45 @@ class Library {
 			}
 		}
 	}
-
+	 */
+	
+	/**
+	 * refactored method to display oldest books using an array to store the oldest books.
+	 * See commented out method above for original implementation and limitations.
+	 */
+	public void displayOldest() {
+		System.out.printf("Oldest Book in %s:%n", name);
+		if (bookShelf[0][0] == null) {
+			System.out.println("Library is empty");
+			return;
+		}
+		Book[] oldestBooks = new Book[numberOfShelves * shelfCapcity];  // I need array lists {https://media1.tenor.com/m/47qpxBq_Tw0AAAAd/cat-cat-meme.gif}
+		int oldestYear = bookShelf[0][0].getYear();
+		int oldestBooksCount = 0;
+		for (int i = 0; i <= currentShelf; i++) {
+			for (int j = 0; j < bookShelf[0].length; j++) {
+				Book currentBook = bookShelf[i][j];
+				if (currentBook != null) {
+					int currentYear = currentBook.getYear();
+					if (currentYear < oldestYear) {
+						oldestYear = currentYear;
+						oldestBooks[0] = currentBook;
+						oldestBooksCount = 1;
+					} else if (currentYear == oldestYear) {
+						oldestBooks[oldestBooksCount] = currentBook;
+						oldestBooksCount++;
+					}
+				}
+			}
+		}
+		for (int i = 0; i < oldestBooksCount; i++) {
+			System.out.println(oldestBooks[i].toString());
+		}
+	}
+	
+	/**
+	 * Method to print the number of books at each row.
+	 */
 	public void displayCountPerShelf() {
 		for (int i = 0; i < bookShelf.length; i++) {
 			int count = 0;
