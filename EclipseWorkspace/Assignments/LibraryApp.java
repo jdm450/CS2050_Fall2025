@@ -1,7 +1,9 @@
+
 /**
  * 
  */
-import java.time.Year;
+
+
 /**
  * 
  */
@@ -18,7 +20,7 @@ public class LibraryApp {
 		System.out.println("getTitle():   " + unitTestBook.getTitle());
 		System.out.println("getAuthor():  " + unitTestBook.getAuthor());
 		System.out.println("getYear():    " + unitTestBook.getYear());
-		System.out.println("stringOfBookDetails():   " + unitTestBook.toString());
+		System.out.println("stringOfBookDetails():   " + unitTestBook);
 		System.out.println();
 		System.out.println("Setting up Test Library");
 		int numberOfShelves = 3;
@@ -115,8 +117,10 @@ class Library {
 	private boolean isFull;
 
 	/**
-	 * Constructor for the Library class. currentShelf, currentSlot, and isFull do not need to be
-	 * explicitly declared in the constructor because default value is 0 for integers and false for booleans
+	 * Constructor for the Library class. currentShelf, currentSlot, and isFull do
+	 * not need to be explicitly declared in the constructor because default value
+	 * is 0 for integers and false for booleans
+	 * 
 	 * @param name
 	 * @param numberOfShelves
 	 * @param shelfCapacity
@@ -127,19 +131,22 @@ class Library {
 		this.shelfCapcity = shelfCapacity;
 		bookShelf = new Book[numberOfShelves][shelfCapacity];
 	}
-	
+
 	/**
 	 * Getter method for name variable.
+	 * 
 	 * @return name
 	 */
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
-	 * Adds a book to the bookshelf array and adjusts row and column variables based on current position in the array.
-	 * I implemented one-step recursion to eliminate repetitive print statements.
-	 * Not as elegant as integer division and modulo, but it works.
+	 * Adds a book to the bookshelf array and adjusts row and column variables based
+	 * on current position in the array. I implemented one-step recursion to
+	 * eliminate repetitive print statements. Not as elegant as integer division and
+	 * modulo, but it works.
+	 * 
 	 * @param bookToAdd
 	 */
 	public void addBook(Book bookToAdd) {
@@ -148,12 +155,13 @@ class Library {
 			return;
 		}
 		if (isFull) {
-			System.out.printf("Can't add: %s %nThe library is full%n", bookToAdd.toString());
+			System.out.printf("Can't add book: %s %nThe library is full%n", bookToAdd);
 			return;
 		}
 		if (currentSlot < shelfCapcity) {
 			bookShelf[currentShelf][currentSlot] = bookToAdd;
-			System.out.printf("added %s at shelf %d, row %d%n", bookToAdd.toString(), currentShelf + 1, currentSlot + 1);
+			System.out.printf("added %s at shelf %d, row %d%n", bookToAdd, currentShelf + 1,
+					currentSlot + 1);
 			currentSlot++;
 		} else {
 			currentShelf++;
@@ -164,10 +172,10 @@ class Library {
 			addBook(bookToAdd);
 		}
 	}
-	
+
 	/**
-	 * Iterates through the bookShelf array up to and including currentShelf. 
-	 * Prints the row, column and book details for each index that isn't null.
+	 * Iterates through the bookShelf array up to and including currentShelf. Prints
+	 * the row, column and book details for each index that isn't null.
 	 */
 	public void printAllBooks() {
 		System.out.println("------------------------------------------------------------\n"
@@ -177,7 +185,7 @@ class Library {
 		for (int i = 0; i <= currentShelf; i++) {
 			for (int j = 0; j < bookShelf[0].length; j++) {
 				if (bookShelf[i][j] != null) {
-					System.out.printf("%d	%d %s%n", i + 1, j + 1, bookShelf[i][j].toString());
+					System.out.printf("%d	%d %s%n", i + 1, j + 1, bookShelf[i][j]);
 					count++;
 				}
 			}
@@ -185,46 +193,10 @@ class Library {
 		System.out.printf("(%d of %d slots filled)%n", count, (numberOfShelves * shelfCapcity));
 		System.out.println("------------------------------------------------------------");
 	}
-	
-	// currently iterating through the array twice.
-	// not sure how to make one iteration work without array list to store oldest books
-	// but wait... there's more... 
-	// use array[edge_max_books] with counter 
-	// or store oldest year as an instance variable of the library?
+
 	/**
-	 * public void displayOldest() {
-		if (bookShelf[0][0] == null) {
-			System.out.println("Display Oldest: Library is empty");
-		} else {
-			int oldestYear = bookShelf[0][0].getYear();
-			for (int i = 0; i <= currentShelf; i++) {
-				for (int j = 0; j < bookShelf[0].length; j++) {
-					if (bookShelf[i][j] != null) {
-						if (bookShelf[i][j].getYear() < oldestYear) {
-							oldestYear = bookShelf[i][j].getYear();
-						}
-					}
-				}
-			}
-			System.out.printf("Oldest Book in %s%nEarliest Publication Year: %d%n", name, oldestYear);
-			for (int i = 0; i <= currentShelf; i++) {
-				for (int j = 0; j < bookShelf[0].length; j++) {
-					if (bookShelf[i][j] != null) {
-						if (bookShelf[i][j].getYear() == oldestYear) {
-							System.out.println(bookShelf[i][j].toString());
-						}
-					} else {
-						return;
-					}
-				}
-			}
-		}
-	}
-	 */
-	
-	/**
-	 * refactored method to display oldest books using an array to store the oldest books.
-	 * See commented out method above for original implementation and limitations.
+	 * refactored method to display oldest book. I used an array to store the oldest
+	 * in case there are multiple books from the oldest year.
 	 */
 	public void displayOldest() {
 		System.out.printf("Oldest Book in %s:%n", name);
@@ -232,7 +204,7 @@ class Library {
 			System.out.println("Library is empty");
 			return;
 		}
-		Book[] oldestBooks = new Book[numberOfShelves * shelfCapcity];  // I need array lists {https://media1.tenor.com/m/47qpxBq_Tw0AAAAd/cat-cat-meme.gif}
+		Book[] oldestBooks = new Book[numberOfShelves * shelfCapcity]; // *me looking longingly at array lists* --->{https://media.tenor.com/yQ52_bMHtgIAAAAM/wine-cat.gif}
 		int oldestYear = bookShelf[0][0].getYear();
 		int oldestBooksCount = 0;
 		for (int i = 0; i <= currentShelf; i++) {
@@ -252,10 +224,10 @@ class Library {
 			}
 		}
 		for (int i = 0; i < oldestBooksCount; i++) {
-			System.out.println(oldestBooks[i].toString());
+			System.out.println(oldestBooks[i]);
 		}
 	}
-	
+
 	/**
 	 * Method to print the number of books at each row.
 	 */
@@ -271,3 +243,4 @@ class Library {
 		}
 	}
 } // end of Library class
+
