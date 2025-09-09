@@ -6,6 +6,8 @@ public class SlectionSort {
 		
 		// test duplicate array
 		// int[] test = {9, 7, 5, 9, 7, 5};
+		// test empty
+		// int[] test = {};
 		
 		int[] randomArray = new int[10];
 		populateArray(randomArray);
@@ -28,16 +30,15 @@ public class SlectionSort {
 	
 	public static void selectionSort(int[] array) {
 		for (int i = 0; i < array.length; i++) {
-			int minIndex = i;
+			int smallest = i;
 			for (int j = i + 1; j < array.length; j++) {
-				if (array[j] < array[minIndex]) {
-					minIndex = j;
+				if (array[j] < array[smallest]) {
+					smallest = j;
 				}
 			}
 			int temp = array[i];
-			array[i] = array[minIndex];
-			array[minIndex] = temp;
+			array[i] = array[smallest];
+			array[smallest] = temp;
 		}
 	}
-
 }

@@ -97,7 +97,6 @@ class Book {
 		return year;
 	}
 
-	// toString method
 	@Override
 	public String toString() {
 		String formmatedString = String.format("\"%s\" by %s (%d)", title, author, year);
